@@ -1,0 +1,138 @@
+/* css/styles.css - Custom Styling & Print Layout for EduFlow SMS */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #f8fafc;
+  color: #1e293b;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism & Card Accents */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Active Nav State */
+.nav-link.active {
+  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+.nav-link.active svg {
+  color: #ffffff;
+}
+
+/* Attendance Status Badge Buttons */
+.att-btn {
+  transition: all 0.15s ease-in-out;
+}
+.att-btn:active {
+  transform: scale(0.95);
+}
+.att-btn.selected-p {
+  background-color: #10b981;
+  color: #ffffff;
+  border-color: #059669;
+}
+.att-btn.selected-a {
+  background-color: #ef4444;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+.att-btn.selected-l {
+  background-color: #f59e0b;
+  color: #ffffff;
+  border-color: #d97706;
+}
+.att-btn.selected-e {
+  background-color: #6366f1;
+  color: #ffffff;
+  border-color: #4f46e5;
+}
+
+/* Modal Animations */
+.modal-overlay {
+  transition: opacity 0.2s ease-out;
+}
+.modal-content {
+  transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+/* Toast Container */
+#toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.toast-item {
+  pointer-events: auto;
+  animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* PRINT MEDIA QUERIES FOR RECEIPTS AND REPORTS */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-receipt-area, #printable-receipt-area * {
+    visibility: visible;
+  }
+
+  #printable-receipt-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background: white;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

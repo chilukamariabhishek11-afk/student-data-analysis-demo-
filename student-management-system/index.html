@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduFlow - Student & Fee Management System</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col md:flex-row">
+
+  <!-- Mobile Top Nav -->
+  <header class="md:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+    <div class="flex items-center space-x-2.5">
+      <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-black flex items-center justify-center text-sm shadow">
+        ED
+      </div>
+      <span class="font-bold text-slate-900 brand-inst-name text-sm">Brightwood Academy</span>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button onclick="window.openAddStudentModal()" class="p-2 bg-indigo-600 text-white rounded-lg shadow-sm text-xs">
+        <i data-lucide="user-plus" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Sidebar Navigation -->
+  <aside class="w-full md:w-64 bg-white border-r border-slate-200 shrink-0 md:min-h-screen flex flex-col justify-between p-4 z-30">
+    <div>
+      <!-- Brand & School Info -->
+      <div class="hidden md:flex items-center space-x-3 px-2 py-3 mb-6 border-b border-slate-100">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-800 text-white font-black flex items-center justify-center text-base shadow-md">
+          ED
+        </div>
+        <div>
+          <h1 class="font-extrabold text-slate-900 text-sm tracking-tight brand-inst-name">Brightwood Academy</h1>
+          <span class="text-[11px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full inline-block mt-0.5">Academic '26</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-1">
+        <a href="#dashboard" data-target="dashboard" class="nav-link active flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all">
+          <i data-lucide="layout-dashboard" class="w-4 h-4 text-slate-400"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#students" data-target="students" class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all">
+          <i data-lucide="users" class="w-4 h-4 text-slate-400"></i>
+          <span>Students Directory</span>
+        </a>
+        <a href="#attendance" data-target="attendance" class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all">
+          <i data-lucide="calendar-check" class="w-4 h-4 text-slate-400"></i>
+          <span>Attendance</span>
+        </a>
+        <a href="#fees" data-target="fees" class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all">
+          <i data-lucide="credit-card" class="w-4 h-4 text-slate-400"></i>
+          <span>Fee Management</span>
+        </a>
+        <a href="#academics" data-target="academics" class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all">
+          <i data-lucide="graduation-cap" class="w-4 h-4 text-slate-400"></i>
+          <span>Academics & Grades</span>
+        </a>
+        <a href="#settings" data-target="settings" class="nav-link flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all">
+          <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i>
+          <span>Settings & Backup</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Quick Action / System Status Box -->
+    <div class="hidden md:block mt-6 pt-4 border-t border-slate-100">
+      <div class="bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-100">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[11px] font-bold text-indigo-900 uppercase tracking-wide">Quick Action</span>
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        </div>
+        <button onclick="window.openAddStudentModal()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center space-x-1.5">
+          <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+          <span>Enroll Student</span>
+        </button>
+      </div>
+      <p class="text-[10px] text-slate-400 text-center mt-3">&copy; 2026 EduFlow SMS Platform</p>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+
+    <!-- ================= VIEW 1: DASHBOARD ================= -->
+    <section id="view-dashboard" class="tab-view space-y-6">
+      <!-- Welcome & Top Actions Banner -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Executive Dashboard</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Real-time overview of student enrollment, daily attendance, and fee collections.</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.navigateToTab('attendance')" class="px-3 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition">
+            <i data-lucide="calendar" class="w-4 h-4 text-indigo-600"></i>
+            <span>Take Attendance</span>
+          </button>
+          <button onclick="window.openAddStudentModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-100 flex items-center space-x-1.5 transition">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>Add Student</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Total Students -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-indigo-200 transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Enrolled</span>
+            <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-slate-900" id="dash-total-students">0</div>
+          <p class="text-[11px] text-slate-400 mt-1">Across Grades 10 - 12</p>
+        </div>
+
+        <!-- Attendance Rate -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-emerald-200 transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Attendance Rate</span>
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <i data-lucide="user-check" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-emerald-600" id="dash-att-rate">0%</div>
+          <p class="text-[11px] text-slate-400 mt-1 truncate" id="dash-att-subtitle">Loading records...</p>
+        </div>
+
+        <!-- Total Fees Collected -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-indigo-200 transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Fees Collected</span>
+            <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <i data-lucide="wallet" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-slate-900" id="dash-fees-collected">$0</div>
+          <p class="text-[11px] text-emerald-600 font-semibold mt-1" id="dash-fee-rate">0% collected</p>
+        </div>
+
+        <!-- Outstanding Fees -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs hover:border-rose-200 transition">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Outstanding Due</span>
+            <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+              <i data-lucide="alert-circle" class="w-5 h-5"></i>
+            </div>
+          </div>
+          <div class="text-3xl font-black text-rose-600" id="dash-fees-pending">$0</div>
+          <p class="text-[11px] text-slate-400 mt-1">Pending payments</p>
+        </div>
+      </div>
+
+      <!-- Visual Analytics: Charts Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Attendance Trend Chart -->
+        <div class="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Attendance Trend (Recent Days)</h3>
+              <p class="text-xs text-slate-400">Daily student present rate percentage</p>
+            </div>
+            <span class="px-2.5 py-1 text-[11px] font-bold bg-indigo-50 text-indigo-700 rounded-lg">Last 7 Days</span>
+          </div>
+          <div class="h-64">
+            <canvas id="attendanceTrendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Fee Collection Status Chart -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm">Fee Collection Status</h3>
+              <p class="text-xs text-slate-400">Account payment distribution</p>
+            </div>
+            <button onclick="window.navigateToTab('fees')" class="text-xs text-indigo-600 font-bold hover:underline">Details &rarr;</button>
+          </div>
+          <div class="h-56 relative flex items-center justify-center">
+            <canvas id="feeDistributionChart"></canvas>
+          </div>
+          <p class="text-center text-[11px] text-slate-400 mt-2">Paid vs Partial vs Unpaid accounts</p>
+        </div>
+      </div>
+
+      <!-- Alert & Activity Feeds -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Attendance Attention List -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-500"></i>
+              <h3 class="font-bold text-slate-800 text-sm">Attendance Watchlist (&lt; 75%)</h3>
+            </div>
+            <span class="text-[11px] text-slate-400">Requires follow-up</span>
+          </div>
+          <div class="space-y-2.5" id="dash-low-attendance-list">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Recent Fee Transactions -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="receipt" class="w-4 h-4 text-emerald-500"></i>
+              <h3 class="font-bold text-slate-800 text-sm">Recent Fee Payments</h3>
+            </div>
+            <button onclick="window.navigateToTab('fees')" class="text-xs font-bold text-indigo-600 hover:underline">View All</button>
+          </div>
+          <div class="space-y-1" id="dash-recent-transactions">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 2: STUDENTS DIRECTORY ================= -->
+    <section id="view-students" class="tab-view hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Students Directory</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Manage enrolled student profiles, contact info, and guardian records.</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold" id="student-count-badge">0 Students</span>
+          <button onclick="window.openAddStudentModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-100 flex items-center space-x-1.5 transition">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>
+            <span>Add Student</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters Toolbar -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full md:w-80">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+          <input 
+            type="text" 
+            id="student-search-input" 
+            placeholder="Search by name, roll no, email..." 
+            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 focus:bg-white transition"
+          />
+        </div>
+        <div class="flex items-center space-x-3 w-full md:w-auto">
+          <select id="student-grade-filter" class="w-full md:w-36 py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-indigo-600">
+            <option value="all">All Grades</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+          </select>
+          <select id="student-section-filter" class="w-full md:w-36 py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-indigo-600">
+            <option value="all">All Sections</option>
+            <option value="A">Section A</option>
+            <option value="B">Section B</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Students Table -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <th class="py-3 px-4">Roll</th>
+                <th class="py-3 px-4">Student</th>
+                <th class="py-3 px-4">Grade & Sec</th>
+                <th class="py-3 px-4">Guardian</th>
+                <th class="py-3 px-4">Attendance</th>
+                <th class="py-3 px-4">Fee Status</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: ATTENDANCE MANAGEMENT ================= -->
+    <section id="view-attendance" class="tab-view hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Daily Attendance Sheet</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Record and monitor student presence, absences, and excuses per date.</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button id="btn-export-attendance" class="px-3 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-semibold shadow-xs flex items-center space-x-1.5 transition">
+            <i data-lucide="download" class="w-4 h-4 text-indigo-600"></i>
+            <span>Export CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Controls & Date Selector Bar -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-wrap gap-3 items-center justify-between">
+        <div class="flex flex-wrap items-center gap-3">
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Date</label>
+            <input 
+              type="date" 
+              id="att-date-picker" 
+              class="py-1.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-indigo-600"
+            />
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Grade</label>
+            <select id="att-grade-filter" class="py-1.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-indigo-600">
+              <option value="all">All Grades</option>
+              <option value="10">Grade 10</option>
+              <option value="11">Grade 11</option>
+              <option value="12">Grade 12</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Section</label>
+            <select id="att-section-filter" class="py-1.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-indigo-600">
+              <option value="all">All Sections</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1">Search</label>
+            <input 
+              type="text" 
+              id="att-search-input" 
+              placeholder="Filter student..." 
+              class="py-1.5 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:outline-indigo-600 w-36"
+            />
+          </div>
+        </div>
+
+        <!-- Bulk Mark Buttons -->
+        <div class="flex items-center space-x-2 pt-2 sm:pt-0">
+          <button id="btn-mark-all-present" class="px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 rounded-xl text-xs font-bold transition flex items-center space-x-1">
+            <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
+            <span>All Present</span>
+          </button>
+          <button id="btn-mark-all-absent" class="px-3 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 rounded-xl text-xs font-bold transition flex items-center space-x-1">
+            <i data-lucide="x-circle" class="w-3.5 h-3.5"></i>
+            <span>All Absent</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Realtime Date Summary Counters -->
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+          <span class="text-[10px] font-bold uppercase text-slate-400">Present (P)</span>
+          <div class="text-xl font-black text-emerald-600 mt-0.5" id="att-summary-present">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+          <span class="text-[10px] font-bold uppercase text-slate-400">Absent (A)</span>
+          <div class="text-xl font-black text-rose-600 mt-0.5" id="att-summary-absent">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+          <span class="text-[10px] font-bold uppercase text-slate-400">Late (L)</span>
+          <div class="text-xl font-black text-amber-600 mt-0.5" id="att-summary-late">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs">
+          <span class="text-[10px] font-bold uppercase text-slate-400">Excused (E)</span>
+          <div class="text-xl font-black text-indigo-600 mt-0.5" id="att-summary-excused">0</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-xs col-span-2 sm:col-span-1">
+          <span class="text-[10px] font-bold uppercase text-slate-400">Day Rate</span>
+          <div class="text-xl font-black text-slate-900 mt-0.5" id="att-summary-percentage">0%</div>
+        </div>
+      </div>
+
+      <!-- Attendance Table -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <th class="py-3 px-4 w-12">#</th>
+                <th class="py-3 px-4">Student</th>
+                <th class="py-3 px-4">Class</th>
+                <th class="py-3 px-4">Overall Avg</th>
+                <th class="py-3 px-4">Mark Today</th>
+                <th class="py-3 px-4 text-right">History</th>
+              </tr>
+            </thead>
+            <tbody id="attendance-table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 4: FEE MANAGEMENT ================= -->
+    <section id="view-fees" class="tab-view hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Fee Management & Invoicing</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Collect school dues, track installment history, and generate printable invoices.</p>
+        </div>
+      </div>
+
+      <!-- Top KPI Row -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+          <span class="text-xs font-bold uppercase text-slate-400">Total Billed Fees</span>
+          <div class="text-2xl font-black text-slate-900 mt-1" id="fees-kpi-billed">$0</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+          <span class="text-xs font-bold uppercase text-slate-400">Total Collected</span>
+          <div class="text-2xl font-black text-emerald-600 mt-1" id="fees-kpi-collected">$0</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+          <span class="text-xs font-bold uppercase text-slate-400">Total Due / Overdue</span>
+          <div class="text-2xl font-black text-rose-600 mt-1" id="fees-kpi-pending">$0</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+          <span class="text-xs font-bold uppercase text-slate-400">Collection Rate</span>
+          <div class="text-2xl font-black text-indigo-600 mt-1" id="fees-kpi-rate">0%</div>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full md:w-80">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+          <input 
+            type="text" 
+            id="fee-search-input" 
+            placeholder="Search student or roll no..." 
+            class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-indigo-600 focus:bg-white transition"
+          />
+        </div>
+        <div class="flex items-center space-x-3 w-full md:w-auto">
+          <select id="fee-status-filter" class="w-full md:w-36 py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-indigo-600">
+            <option value="all">All Statuses</option>
+            <option value="Paid">Fully Paid</option>
+            <option value="Partial">Partial</option>
+            <option value="Unpaid">Unpaid / Due</option>
+          </select>
+          <select id="fee-grade-filter" class="w-full md:w-36 py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-indigo-600">
+            <option value="all">All Grades</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Fees Table -->
+      <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <th class="py-3 px-4">Student</th>
+                <th class="py-3 px-4">Plan Fee</th>
+                <th class="py-3 px-4">Payable</th>
+                <th class="py-3 px-4">Paid</th>
+                <th class="py-3 px-4">Remaining Due</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="fees-table-body">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 5: ACADEMICS & MARKS ================= -->
+    <section id="view-academics" class="tab-view hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Academics & Examination Grades</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Track student report cards, subject assessments, and GPA score cards.</p>
+        </div>
+        <div>
+          <select id="academic-grade-filter" class="py-2 px-3 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-indigo-600">
+            <option value="all">All Grades</option>
+            <option value="10">Grade 10</option>
+            <option value="11">Grade 11</option>
+            <option value="12">Grade 12</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="academics-cards-container">
+        <!-- Populated dynamically -->
+      </div>
+    </section>
+
+    <!-- ================= VIEW 6: SETTINGS & BACKUP ================= -->
+    <section id="view-settings" class="tab-view hidden space-y-6">
+      <div>
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">System Settings & Data Backup</h2>
+        <p class="text-xs text-slate-500 mt-0.5">Customize institution profile, manage local storage data, or export backups.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- School Configuration Card -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
+          <h3 class="font-bold text-slate-800 text-sm mb-4 pb-3 border-b border-slate-100 flex items-center space-x-2">
+            <i data-lucide="building" class="w-4 h-4 text-indigo-600"></i>
+            <span>Institute Details</span>
+          </h3>
+          <form id="settings-form" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Institution Name</label>
+              <input type="text" id="setting-name" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600 focus:bg-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Motto / Tagline</label>
+              <input type="text" id="setting-tagline" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600 focus:bg-white" />
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Currency Symbol</label>
+                <input type="text" id="setting-currency" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600 focus:bg-white" />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-600 mb-1">Academic Year</label>
+                <input type="text" id="setting-year" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600 focus:bg-white" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Phone Number</label>
+              <input type="text" id="setting-phone" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600 focus:bg-white" />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-600 mb-1">Official Address</label>
+              <input type="text" id="setting-address" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600 focus:bg-white" />
+            </div>
+            <button type="submit" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition shadow-sm">
+              Save Institution Settings
+            </button>
+          </form>
+        </div>
+
+        <!-- Data Backup & Reset Card -->
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm mb-4 pb-3 border-b border-slate-100 flex items-center space-x-2">
+              <i data-lucide="database" class="w-4 h-4 text-indigo-600"></i>
+              <span>Backup, Restore & Reset</span>
+            </h3>
+            <p class="text-xs text-slate-500 mb-4 leading-relaxed">
+              Your data is safely stored in your browser's local storage. You can export a full JSON snapshot for backup, restore an existing backup file, or reset to original demo data.
+            </p>
+
+            <div class="space-y-3">
+              <button id="btn-export-json" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2">
+                <i data-lucide="download" class="w-4 h-4 text-indigo-600"></i>
+                <span>Download Full Data Backup (JSON)</span>
+              </button>
+
+              <label class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center space-x-2 cursor-pointer border border-dashed border-slate-300">
+                <i data-lucide="upload" class="w-4 h-4 text-emerald-600"></i>
+                <span>Restore from JSON File</span>
+                <input type="file" id="import-json-file" accept=".json" class="hidden" />
+              </label>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-slate-100 mt-6">
+            <h4 class="text-xs font-bold text-rose-600 uppercase tracking-wider mb-2">Danger Zone</h4>
+            <p class="text-[11px] text-slate-400 mb-3">Restore the system to clean factory demo data (all changes will be reset).</p>
+            <button id="btn-reset-demo" class="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl text-xs font-bold transition">
+              Reset System to Demo Records
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Modal 1: Add / Edit Student -->
+  <div id="student-form-modal" class="modal-overlay hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl modal-content max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-900 text-base" id="student-modal-title">Add New Student</h3>
+        <button onclick="window.closeModal('student-form-modal')" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="student-form" class="space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
+            <input type="text" id="input-name" required placeholder="e.g. Maya Patel" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600 focus:bg-white" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Roll Number *</label>
+            <input type="text" id="input-roll" required placeholder="e.g. 1011" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600 focus:bg-white" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Grade</label>
+            <select id="input-grade" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600">
+              <option value="10">Grade 10</option>
+              <option value="11">Grade 11</option>
+              <option value="12">Grade 12</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Section</label>
+            <select id="input-section" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600">
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Gender</label>
+            <select id="input-gender" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600">
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Date of Birth</label>
+            <input type="date" id="input-dob" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Blood Group</label>
+            <select id="input-blood" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600">
+              <option value="O+">O+</option>
+              <option value="A+">A+</option>
+              <option value="B+">B+</option>
+              <option value="AB+">AB+</option>
+              <option value="O-">O-</option>
+              <option value="A-">A-</option>
+              <option value="B-">B-</option>
+              <option value="AB-">AB-</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Annual Fee</label>
+            <input type="number" id="input-fee" value="2500" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Student Phone</label>
+            <input type="text" id="input-phone" placeholder="+1 555-0123" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Student Email</label>
+            <input type="email" id="input-email" placeholder="student@example.com" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Guardian Name</label>
+            <input type="text" id="input-guardian-name" placeholder="Parent or Guardian" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Guardian Phone</label>
+            <input type="text" id="input-guardian-phone" placeholder="+1 555-0199" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Residential Address</label>
+          <input type="text" id="input-address" placeholder="123 Street Name, City" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end space-x-2">
+          <button type="button" onclick="window.closeModal('student-form-modal')" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-100">
+            Save Student Record
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Student Profile Viewer -->
+  <div id="student-profile-modal" class="modal-overlay hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl modal-content max-h-[90vh] overflow-y-auto relative">
+      <button onclick="window.closeModal('student-profile-modal')" class="absolute top-5 right-5 text-white/80 hover:text-white p-1 rounded-lg z-10">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+      <div id="student-profile-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Attendance History Modal -->
+  <div id="attendance-history-modal" class="modal-overlay hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl modal-content">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-900 text-base">Attendance History Log</h3>
+        <button onclick="window.closeModal('attendance-history-modal')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="attendance-history-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Collect Fee Payment -->
+  <div id="collect-fee-modal" class="modal-overlay hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl modal-content">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-900 text-base">Record Fee Payment</h3>
+        <button onclick="window.closeModal('collect-fee-modal')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="bg-indigo-50/70 p-3 rounded-xl border border-indigo-100 mb-4">
+        <p class="text-xs font-bold text-slate-900" id="pay-student-name">Student Name</p>
+        <p class="text-[11px] text-slate-500" id="pay-student-info">Roll No &bull; Grade</p>
+        <div class="flex justify-between items-center mt-2 pt-2 border-t border-indigo-100">
+          <span class="text-xs text-slate-600 font-medium">Pending Due:</span>
+          <span class="text-sm font-extrabold text-rose-600" id="pay-due-amount">$0</span>
+        </div>
+      </div>
+
+      <form id="collect-fee-form" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Payment Amount ($)</label>
+          <input type="number" id="pay-amount-input" required min="1" step="any" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-indigo-600 focus:bg-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Date</label>
+            <input type="date" id="pay-date-input" required class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Payment Mode</label>
+            <select id="pay-method-input" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600">
+              <option value="Online UPI">Online / UPI</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Credit / Debit Card</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Cheque">Cheque</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Remarks / Note</label>
+          <input type="text" id="pay-remarks-input" placeholder="e.g. Term 1 Tuition Fee" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-indigo-600" />
+        </div>
+        <div class="pt-3 border-t border-slate-100 flex justify-end space-x-2">
+          <button type="button" onclick="window.closeModal('collect-fee-modal')" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-100">
+            Confirm & Generate Receipt
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Student Receipts History -->
+  <div id="receipt-history-modal" class="modal-overlay hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl modal-content">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-900 text-base">Payment Receipts & Invoices</h3>
+        <button onclick="window.closeModal('receipt-history-modal')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div id="receipt-history-modal-body">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 6: Printable Receipt Preview -->
+  <div id="printable-receipt-modal" class="modal-overlay hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl modal-content">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4 no-print">
+        <div class="flex items-center space-x-2 text-indigo-700 font-bold text-sm">
+          <i data-lucide="printer" class="w-4 h-4"></i>
+          <span>Receipt Preview</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.print()" class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow transition flex items-center space-x-1.5">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+            <span>Print / Save PDF</span>
+          </button>
+          <button onclick="window.closeModal('printable-receipt-modal')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+      <div id="printable-receipt-area">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 7: Add / Edit Report Card Marks -->
+  <div id="add-marks-modal" class="modal-overlay hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl modal-content">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-900 text-base">Edit Report Card Marks</h3>
+        <button onclick="window.closeModal('add-marks-modal')" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <div class="mb-3">
+        <h4 class="text-xs font-bold text-slate-800" id="marks-modal-student-name">Student Name</h4>
+        <p class="text-[11px] text-slate-400" id="marks-modal-student-info">Roll &bull; Grade</p>
+      </div>
+
+      <form id="marks-form" class="space-y-3">
+        <div id="marks-rows-container">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex justify-end space-x-2">
+          <button type="button" onclick="window.closeModal('add-marks-modal')" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-xl text-xs font-semibold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-100">
+            Save Report Card
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/store.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/fees.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
